@@ -210,6 +210,7 @@ Gateway | 2.x | 3.x | Composer Package | Maintainer
 [OnePay](https://github.com/dilab/omnipay-onepay) | ✓ | ✓ | dilab/omnipay-onepay | [Xu Ding](https://github.com/dilab)
 [Openpay Australia](https://github.com/sudiptpa/openpay) | ✓ | ✓ | sudiptpa/omnipay-openpay | [Sujip Thapa](https://github.com/sudiptpa)
 [Oppwa](https://github.com/vdbelt/omnipay-oppwa) | ✓ | ✓ | vdbelt/omnipay-oppwa | [Martin van de Belt](https://github.com/vdbelt)
+[PaidYET](https://github.com/PaidYET/paidyet-omnipay) | ✓ | ✓ | paidyet/omnipay | [DeVaughn Skillern](https://github.com/DeVaughnPaidYet)
 [PAY. (Pay.nl & Pay.be)](https://github.com/paynl/omnipay-paynl) | ✓ | ✓ | paynl/omnipay-paynl | [Andy Pieters](https://github.com/andypieters)
 [PayMongo](https://github.com/oozman/omnipay-paymongo) | - | ✓ | oozman/omnipay-paymongo | [Oozman](https://github.com/oozman)
 [Payoo](https://github.com/dilab/omnipay-payoo) | ✓ | ✓ | dilab/omnipay-payoo | [Xu Ding](https://github.com/dilab)

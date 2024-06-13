@@ -1,14 +1,17 @@
 {
-    "name": "league/omnipay",
-    "type": "metapackage",
-    "description": "Omnipay payment processing library",
+    "name": "paidyet/omnipay",
+    "type": "library",
+    "description": "PaidYET driver for the Omnipay payment processing library",
     "keywords": [
-        "omnipay",
-        "checkout",
-        "creditcard",
+        "paidyet",
+        "paid yet",
+        "gateway",
+        "merchant",
+        "secure",
+        "pay",
         "payment"
     ],
-    "homepage": "https://omnipay.thephpleague.com/",
+    "homepage": "https://github.com/PaidYET",
     "license": "MIT",
     "authors": [
         {
