@@ -15,12 +15,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Adrian Macneil",
-            "email": "adrian@adrianmacneil.com"
-        },
-        {
-            "name": "Barry vd. Heuvel",
-            "email": "barryvdh@gmail.com"
+            "name": "DeVaughn Skillern",
+            "email": "devaughn@paidyet.com"
         }
     ],
     "require": {
