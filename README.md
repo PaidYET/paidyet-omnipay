@@ -69,7 +69,7 @@ Omnipay is installed via [Composer](https://getcomposer.org/).
 For most uses, you will need to require `league/omnipay` and an individual gateway:
 
 ```
-composer require league/omnipay:^3 omnipay/paypal
+composer require paidyet/omnipay
 ```
 
 If you want to use your own HTTP Client instead of Guzzle (which is the default for `league/omnipay`),
