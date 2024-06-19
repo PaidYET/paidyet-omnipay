@@ -19,50 +19,6 @@ is fully unit tested, and even comes with an example application to get you star
 * Because most payment gateways have exceptionally poor documentation
 * Because you are writing a shopping cart and need to support multiple gateways
 
-## TL;DR
-
-Just want to see some code?
-
-```php
-use Omnipay\Omnipay;
-
-$gateway = Omnipay::create('Stripe');
-$gateway->setApiKey('abc123');
-
-$formData = array('number' => '4242424242424242', 'expiryMonth' => '6', 'expiryYear' => '2030', 'cvv' => '123');
-$response = $gateway->purchase(array('amount' => '10.00', 'currency' => 'USD', 'card' => $formData))->send();
-
-if ($response->isRedirect()) {
-    // redirect to offsite payment gateway
-    $response->redirect();
-} elseif ($response->isSuccessful()) {
-    // payment was successful: update database
-    print_r($response);
-} else {
-    // payment failed: display message to customer
-    echo $response->getMessage();
-}
-```
-
-As you can see, Omnipay has a consistent, well thought out API. We try to abstract as much
-as possible the differences between the various payments gateways.
-
-## Package Layout
-
-Omnipay is a collection of packages which all depend on the
-[omnipay/common](https://github.com/thephpleague/omnipay-common) package to provide
-a consistent interface. There are no dependencies on official payment gateway PHP packages -
-we prefer to work with the HTTP API directly. Under the hood, we use the popular and powerful
-[PHP-HTTP](http://docs.php-http.org/en/latest/index.html) library to make HTTP requests.
-A [Guzzle](http://guzzlephp.org/) adapter is required by default, when using `league/omnipay`.
-
-New gateways can be created by cloning the layout of an existing package. When choosing a
-name for your package, please don't use the `omnipay` vendor prefix, as this implies that
-it is officially supported. You should use your own username as the vendor prefix, and prepend
-`omnipay-` to the package name to make it clear that your package works with Omnipay.
-For example, if your GitHub username was `santa`, and you were implementing the `giftpay`
-payment library, a good name for your composer package would be `santa/omnipay-giftpay`.
-
 ## Installation
 
 Omnipay is installed via [Composer](https://getcomposer.org/).
