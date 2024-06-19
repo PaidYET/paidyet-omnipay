@@ -29,15 +29,6 @@ composer require paidyet/omnipay
 ```
 
 
-## Upgrade from v2 to v3
-
-If your gateway is supported for v3, you can require that version. Make sure you require `league/omnipay` or a separate Http Adapter.
-
-If there is no version for v3 yet, please raise an issue or upgrade the gateways yourself and create a PR.
-See the [Upgrade guide for omnipay/common](https://github.com/thephpleague/omnipay-common/blob/master/UPGRADE.md)
-
-> Note: The package name has been changed from `omnipay/omnipay` to `league/omnipay` for v3
-
 ## Payment Gateways
 
 All payment gateways must implement [GatewayInterface](https://github.com/thephpleague/omnipay-common/blob/master/src/Common/GatewayInterface.php), and will usually
