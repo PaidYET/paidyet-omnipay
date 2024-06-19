@@ -72,12 +72,6 @@ For most uses, you will need to require `league/omnipay` and an individual gatew
 composer require paidyet/omnipay
 ```
 
-If you want to use your own HTTP Client instead of Guzzle (which is the default for `league/omnipay`),
-you can require `omnipay/common` and any `php-http/client-implementation` (see [PHP Http](http://docs.php-http.org/en/latest/clients.html))
-
-```
-composer require league/common:^3 omnipay/paypal php-http/buzz-adapter
-```
 
 ## Upgrade from v2 to v3
 
