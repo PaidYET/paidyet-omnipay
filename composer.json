@@ -19,6 +19,9 @@
             "email": "devaughn@paidyet.com"
         }
     ],
+    "autoload": {
+        "psr-4": { "Omnipay\\PaidYET\\" : "src/" }
+    },
     "require": {
         "php": "^7.2|^8.0",
         "omnipay/common": "^3.1",
@@ -26,7 +29,8 @@
         "php-http/guzzle7-adapter": "^1"
     },
     "require-dev": {
-        "omnipay/tests": "^3|^4"
+        "omnipay/tests": "^3|^4",
+        "http-interop/http-factory-guzzle": "^1.2"
     },
     "autoload-dev": {
         "psr-4": { "Omnipay\\Tests\\" : "tests" }
@@ -40,5 +44,10 @@
         "test": "phpunit"
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
 }

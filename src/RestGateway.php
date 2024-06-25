@@ -6,12 +6,6 @@
 namespace Omnipay\PaidYET;
 
 use Omnipay\Common\AbstractGateway;
-use Omnipay\PaidYET\Message\ProAuthorizeRequest;
-use Omnipay\PaidYET\Message\CaptureRequest;
-use Omnipay\PaidYET\Message\RefundRequest;
-use Omnipay\PaidYET\Message\RestCreateWebhookRequest;
-use Omnipay\PaidYET\Message\RestListWebhooksRequest;
-use Omnipay\PaidYET\Message\RestVerifyWebhookSignatureRequest;
 
 /**
  * PaidYET Class using REST API
