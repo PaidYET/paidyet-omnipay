@@ -32,7 +32,7 @@ class SimpleTest extends TestCase
         $gateway = new RestGateway($client);
 
         // Set necessary parameters for the gateway
-        $gateway->setSecret('XpzvQsVbZ4j16NxiRresU9YyM15ILPy9-RTXkPFs ');
+        $gateway->setSecret('Your-API-key');
         $gateway->setTestMode(true);
 
          // Perform the request

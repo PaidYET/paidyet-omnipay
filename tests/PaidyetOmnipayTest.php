@@ -28,7 +28,7 @@ class PaidyetOmnipayTest extends TestCase
         // Create the Omnipay client with the mocked HTTP client
         $omnipayClient = new OmnipayClient($httpClient);
         $this->gateway = Omnipay::create('PaidYET_Rest', $omnipayClient);
-        $this->gateway->setSecret('XpzvQsVbZ4j16NxiRresU9YyM15ILPy9-RTXkPFs//t');
+        $this->gateway->setSecret('your-api-key');
 
     }
 
