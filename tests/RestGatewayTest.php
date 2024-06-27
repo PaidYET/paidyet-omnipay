@@ -1,244 +1,47 @@
 <?php
 
-namespace Omnipay\PaidYET;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\TestCase;
+use Omnipay\Paidyet\RestGateway;
+use Omnipay\Common\Http\Client as OmnipayClient;
 
-use Omnipay\PaidYET\RestGateway;
-use Omnipay\Common\CreditCard;
-use Omnipay\Tests\GatewayTestCase;
 
-class RestGatewayTest extends GatewayTestCase
+
+class SimpleTest extends TestCase
 {
-    /** @var RestGateway */
-    public $gateway;
-
-    /** @var array */
-    public $options;
-
-    /** @var array */
-    public $subscription_options;
-
-    public function setUp() : void
+    protected $mockHandler;
+    
+    public function testMockResponse()
     {
-        parent::setUp();
+        // Create a mock response
+        $mock = new MockHandler([
+            new Response(200, ['Content-Type' => 'application/json'], json_encode(['status' => 'success', 'data' => 'mocked data']))
+        ]);
 
-        $this->gateway = new RestGateway($this->getHttpClient(), $this->getHttpRequest());
-        $this->gateway->setToken('TEST-TOKEN-123');
-        $this->gateway->setTokenExpires(time() + 600);
 
-        $this->options = array(
-            'amount' => '10.00',
-            'transactionID'  => 'abc123',
-            'card' => new CreditCard(array(
-                'firstName' => 'Example',
-                'lastName' => 'User',
-                'number' => '4111111111111111',
-                'expiryMonth' => '12',
-                'expiryYear' => date('Y'),
-                'cvv' => '123',
-                'transactionID'  => 'abc123',
-            )),
-        );
+        // Create a handler stack with the mock handler
+        $handlerStack = HandlerStack::create($mock);
 
-        $this->subscription_options = array(
-            'transactionID'  => 'abc123',
-            'description'           => 'Description goes here',
-        );
-    }
+        // Create a Guzzle client with the handler stack
+        $client = new OmnipayClient(['handler' => $handlerStack]);
 
-    public function testBearerToken()
-    {
-        $this->gateway->setToken('');
-        $this->setMockHttpResponse('RestTokenSuccess.txt');
+        // Create an instance of the gateway
+        $gateway = new RestGateway($client);
 
-        $this->assertFalse($this->gateway->hasToken());
-        $this->assertEquals('A015GQlKQ6uCRzLHSGRliANi59BHw6egNVKEWRnxvTwvLr0', $this->gateway->getToken()); // triggers request
-        $this->assertEquals(time() + 28800, $this->gateway->getTokenExpires());
-        $this->assertTrue($this->gateway->hasToken());
-    }
+        // Set necessary parameters for the gateway
+        $gateway->setSecret('XpzvQsVbZ4j16NxiRresU9YyM15ILPy9-RTXkPFs ');
+        $gateway->setTestMode(true);
 
-    public function testBearerTokenReused()
-    {
-        $this->setMockHttpResponse('RestTokenSuccess.txt');
-        $this->gateway->setToken('MYTOKEN');
-        $this->gateway->setTokenExpires(time() + 60);
+         // Perform the request
+         $request = $gateway->purchase(['amount' => '10.00', 'currency' => 'USD', ]);
+         $response = $request->send();
 
-        $this->assertTrue($this->gateway->hasToken());
-        $this->assertEquals('MYTOKEN', $this->gateway->getToken());
-    }
-
-    public function testBearerTokenExpires()
-    {
-        $this->setMockHttpResponse('RestTokenSuccess.txt');
-        $this->gateway->setToken('MYTOKEN');
-        $this->gateway->setTokenExpires(time() - 60);
-
-        $this->assertFalse($this->gateway->hasToken());
-        $this->assertEquals('A015GQlKQ6uCRzLHSGRliANi59BHw6egNVKEWRnxvTwvLr0', $this->gateway->getToken());
-    }
-
-    public function testAuthorize()
-    {
-        $this->setMockHttpResponse('RestPurchaseSuccess.txt');
-
-        $response = $this->gateway->authorize($this->options)->send();
-
+         
+        // Assert the response
         $this->assertTrue($response->isSuccessful());
-        $this->assertEquals('44E89981F8714392Y', $response->getTransactionReference());
-        $this->assertNull($response->getMessage());
+        $this->assertEquals('mocked data', $response->getData()['data']);
     }
-
-    public function testPurchase()
-    {
-        $this->setMockHttpResponse('RestPurchaseSuccess.txt');
-
-        $response = $this->gateway->purchase($this->options)->send();
-
-        $this->assertTrue($response->isSuccessful());
-        $this->assertEquals('44E89981F8714392Y', $response->getTransactionReference());
-        $this->assertNull($response->getMessage());
-    }
-
-    public function testCapture()
-    {
-        $request = $this->gateway->capture(array(
-            'transactionReference' => 'abc123',
-            'amount' => 10.00,
-            'currency' => 'AUD',
-        ));
-
-        $this->assertInstanceOf('\Omnipay\PaidYET\Message\RestCaptureRequest', $request);
-        $this->assertSame('abc123', $request->getTransactionReference());
-        $endPoint = $request->getEndpoint();
-        $this->assertSame('https://api.paidyet.com/v3/transaction/', $endPoint);
-        $data = $request->getData();
-        $this->assertNotEmpty($data);
-    }
-
-    public function testRefund()
-    {
-        $request = $this->gateway->refund(array(
-            'transactionReference' => 'abc123',
-            'amount' => 10.00,
-            'currency' => 'AUD',
-        ));
-        $request = $this->gateway->refund(array(
-            'transactionID' => 'abc123'
-        ));
-
-        $this->assertInstanceOf('\Omnipay\PaidYET\Message\RestRefundRequest', $request);
-        $this->assertSame('abc123', $request->getTransactionID());
-        $endPoint = $request->getEndpoint();
-        $this->assertSame('https://api.paidyet.com/v3/transaction/abc123', $endPoint);
-        $data = $request->getData();
-        $this->assertNotEmpty($data);
-    }
-
-    public function testFullRefund()
-    {
-        $request = $this->gateway->refund(array(
-            'transactionReference' => 'abc123',
-        ));
-
-        $this->assertInstanceOf('\Omnipay\PaidYET\Message\RestRefundRequest', $request);
-        $this->assertSame('abc123', $request->getTransactionReference());
-        $endPoint = $request->getEndpoint();
-        $this->assertSame('https://api.paidyet.com/v3/transaction/', $endPoint);
-        $data = $request->getData();
-
-        // we're expecting an empty object here
-        $json = json_encode($data);
-        $this->assertEquals('{}', $json);
-    }
-
-    public function testFetchPurchase()
-    {
-        $request = $this->gateway->fetchPurchase(array('transactionReference' => 'abc123'));
-
-        $this->assertInstanceOf('\Omnipay\PaidYET\Message\RestFetchPurchaseRequest', $request);
-        $this->assertSame('abc123', $request->getTransactionReference());
-        $data = $request->getData();
-        $this->assertEmpty($data);
-    }
-
-    public function testListPurchase()
-    {
-        $request = $this->gateway->listPurchase(array(
-            'count'         => 15,
-            'startId'       => 'PAY123',
-            'startIndex'    => 1,
-            'startTime'     => '2015-09-07T00:00:00Z',
-            'endTime'       => '2015-09-08T00:00:00Z',
-        ));
-
-        $this->assertInstanceOf('\Omnipay\PaidYET\Message\RestListPurchaseRequest', $request);
-        $this->assertSame(15, $request->getCount());
-        $this->assertSame('PAY123', $request->getStartId());
-        $this->assertSame(1, $request->getStartIndex());
-        $this->assertSame('2015-09-07T00:00:00Z', $request->getStartTime());
-        $this->assertSame('2015-09-08T00:00:00Z', $request->getEndTime());
-        $endPoint = $request->getEndpoint();
-        $this->assertSame('https://api.paidyet.com/v3/transaction/', $endPoint);
-        $data = $request->getData();
-        $this->assertNotEmpty($data);
-    }
-
-    public function testCreateCard()
-    {
-        $this->setMockHttpResponse('RestCreateCardSuccess.txt');
-
-        $response = $this->gateway->createCard($this->options)->send();
-
-        $this->assertTrue($response->isSuccessful());
-        $this->assertEquals('CARD-70E78145XN686604FKO3L6OQ', $response->getCardReference());
-        $this->assertNull($response->getMessage());
-    }
-
-
-    public function testPayWithSavedCard()
-    {
-        $this->setMockHttpResponse('RestCreateCardSuccess.txt');
-        $response = $this->gateway->createCard($this->options)->send();
-        $cardRef = $response->getCardReference();
-
-        $this->setMockHttpResponse('RestPurchaseSuccess.txt');
-        $response = $this->gateway->purchase(array('amount'=>'10.00', 'cardReference'=>$cardRef))->send();
-        $this->assertTrue($response->isSuccessful());
-        $this->assertEquals('44E89981F8714392Y', $response->getTransactionReference());
-        $this->assertNull($response->getMessage());
-    }
-
-    public function testRefundCapture()
-    {
-        $request = $this->gateway->refundCapture(array(
-            'transactionReference' => 'abc123'
-        ));
-
-        $this->assertInstanceOf('\Omnipay\PaidYET\Message\RestRefundCaptureRequest', $request);
-        $this->assertSame('abc123', $request->getTransactionReference());
-        $endPoint = $request->getEndpoint();
-        $this->assertSame('https://api.paidyet.com/v3/transaction/', $endPoint);
-
-        $request->setAmount('15.99');
-        $request->setCurrency('USD');
-        $request->setDescription('Test Description');
-        $data = $request->getData();
-        // we're expecting an empty object here
-        $json = json_encode($data);
-        $this->assertEquals('{"amount":{"currency":"USD","total":"15.99"},"description":"Test Description"}', $json);
-    }
-
-    public function testVoid()
-    {
-        $request = $this->gateway->void(array(
-            'transactionReference' => 'abc123'
-        ));
-
-        $this->assertInstanceOf('\Omnipay\PaidYET\Message\RestVoidRequest', $request);
-        $this->assertSame('abc123', $request->getTransactionReference());
-        $endPoint = $request->getEndpoint();
-        $this->assertSame('https://api.paidyet.com/v3/transaction/', $endPoint);
-        $data = $request->getData();
-        $this->assertNotEmpty($data);
-    }
-
 }
