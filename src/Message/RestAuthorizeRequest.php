@@ -65,7 +65,7 @@ class RestAuthorizeRequest extends AbstractRestRequest
             $line2 = $this->getCard()->getAddress2();
             
         } else {
-            $this->validate('amount', 'returnUrl', 'cancelUrl');
+            $this->validate('amount');
 
             unset($data['credit_card']);
 
