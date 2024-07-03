@@ -18,4 +18,5 @@ class RestPurchaseRequest extends RestAuthorizeRequest
         $data['type'] = 'sale';
         return $data;
     }
+
 }

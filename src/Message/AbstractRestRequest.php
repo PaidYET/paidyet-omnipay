@@ -131,7 +131,7 @@ abstract class AbstractRestRequest extends \Omnipay\Common\Message\AbstractReque
         return $this->setParameter('payerId', $value);
     }
 
-    /**
+    /** 
      * Get HTTP Method.
      *
      * This is nearly always POST but can be over-ridden in sub classes.
@@ -159,7 +159,7 @@ abstract class AbstractRestRequest extends \Omnipay\Common\Message\AbstractReque
 
     public function sendData($data)
     {
-
+        
         // Guzzle HTTP Client createRequest does funny things when a GET request
         // has attached data, so don't send the data if the method is GET.
         if ($this->getHttpMethod() == 'GET') {
@@ -175,13 +175,16 @@ abstract class AbstractRestRequest extends \Omnipay\Common\Message\AbstractReque
         // Print token:
         //print_r($this->getToken());
         //exit();
+
+        $token = $this->getParameter('token');
+
         try {
             $httpResponse = $this->httpClient->request(
                 $this->getHttpMethod(),
                 $this->getEndpoint(),
                 array(
                     'Accept' => 'application/json',
-                    'Authorization' => 'Bearer ' . $this->getToken(),
+                    'Authorization' => 'Bearer ' . $token,
                     'Content-type' => 'application/json',
                 ),
                 $body
@@ -193,6 +196,7 @@ abstract class AbstractRestRequest extends \Omnipay\Common\Message\AbstractReque
             //exit();
             return $this->response = $this->createResponse($jsonToArrayResponse, $httpResponse->getStatusCode());
         } catch (\Exception $e) {
+            throw $e;
             throw new InvalidResponseException(
                 'Error communicating with payment gateway: ' . $e->getMessage(),
                 $e->getCode()
