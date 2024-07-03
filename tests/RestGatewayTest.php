@@ -1,13 +1,7 @@
 <?php
 
 use Omnipay\Tests\GatewayTestCase;
-use GuzzleHttp\Client;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\TestCase;
 use Omnipay\PaidYET\RestGateway;
-use Omnipay\Common\Http\Client as OmnipayClient;
 use Omnipay\Common\CreditCard;
 
 class RestGatewayTest extends GatewayTestCase
